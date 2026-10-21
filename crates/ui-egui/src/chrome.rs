@@ -602,6 +602,10 @@ fn main_menu(app: &mut PdfCraftApp, ui: &mut egui::Ui) {
                     }
                     crate::commands::registry_menu(app, ui, "View");
                     ui.menu_button(tl!("Display theme"), |ui| theme_menu(app, ui));
+                    if ui.add(widgets::checkbox(&mut app.float_nav.enabled, tl!("Floating navigation bar"))).changed() {
+                        // Turning it back on shows the whole bar, not the folded button.
+                        app.float_nav.collapsed = false;
+                    }
                     ui.menu_button(tl!("Side panels"), |ui| {
                         scroll_menu(ui, |ui| {
                             for (p, label) in [

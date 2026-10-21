@@ -86,6 +86,7 @@ pub mod file_watch;
 mod files;
 pub mod fill_sign;
 mod fling;
+pub mod float_nav;
 pub mod folders_ui;
 pub mod forms_ui;
 mod home;
@@ -536,6 +537,8 @@ pub struct PdfCraftApp {
     desktop_theme_enabled: bool,
     /// How far a mouse-wheel notch scrolls.
     pub scroll_speed: scroll_speed::ScrollSpeed,
+    /// View ▸ Floating navigation bar: whether it shows, where, how large and which way.
+    pub float_nav: float_nav::FloatNav,
     /// Preferences ▸ Animation effects: on, off, or as the system's animation setting says.
     pub animation_effects: motion::AnimationEffects,
     /// Whether the system asked for no animations, and how the desktop app asks it.
@@ -919,6 +922,7 @@ impl PdfCraftApp {
             #[cfg(target_os = "linux")]
             desktop_theme_enabled: false,
             scroll_speed: scroll_speed::ScrollSpeed::default(),
+            float_nav: float_nav::FloatNav::default(),
             animation_effects: motion::AnimationEffects::default(),
             motion: motion::Motion::default(),
             language: i18n::AUTO.to_string(),
@@ -2305,6 +2309,9 @@ impl PdfCraftApp {
             "comments_panel_closed": self.comments_panel_closed,
             "right_panel_closed": self.right_panel_closed,
         });
+        // Outside `json!`, which is at its recursion limit. A plain struct of numbers and enums
+        // always serializes; the default is only a fallback.
+        v["float_nav"] = serde_json::to_value(self.float_nav).unwrap_or_default();
         // Set apart: one more key inside the macro above passes serde_json's recursion limit.
         v["redact_prefs"] = self.redact_defaults.to_json();
         // Set outside json! above, which is at serde_json's macro recursion limit.
@@ -2353,6 +2360,10 @@ impl PdfCraftApp {
         }
         if let Ok(speed) = serde_json::from_value::<scroll_speed::ScrollSpeed>(v["scroll_speed"].clone()) {
             self.scroll_speed = speed;
+        }
+        // Older settings have no entry: keep the default (shown, bottom centre).
+        if !v["float_nav"].is_null() {
+            self.float_nav = float_nav::FloatNav::restore(&v["float_nav"]);
         }
         if let Ok(effects) = serde_json::from_value::<motion::AnimationEffects>(v["animation_effects"].clone()) {
             self.animation_effects = effects;

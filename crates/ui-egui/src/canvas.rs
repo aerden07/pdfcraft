@@ -4075,6 +4075,8 @@ pub fn document_area(app: &mut PdfCraftApp, index: usize, ui: &mut egui::Ui) {
     if app.mode != crate::Mode::Read {
         quick_bar(app, avail, ui);
     }
+    // Navigation stays in every mode: Read mode and full screen hide the rail it stands in for.
+    crate::float_nav::show(app, index, avail, ui);
     if let Some((source, file, destination)) = remote_open {
         app.open_remote_link(source, file, destination);
     }

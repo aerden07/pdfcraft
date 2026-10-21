@@ -2687,3 +2687,10 @@ key	Space	Space
 # Historical snapshot notice bar (View signed version / View revision).
 	You are viewing the signed version of “{from}” (revision {rev}). It is a snapshot: changes here won't affect the original.	Bạn đang xem phiên bản đã ký của “{from}” (bản sửa đổi {rev}). Đây là ảnh nhanh: các thay đổi ở đây không được áp dụng đến bản gốc.
 	You are viewing revision {rev} of “{from}”. It is a snapshot: changes here won't affect the original.	Bạn đang xem bản sửa đổi {rev} của “{from}”. Đây là ảnh nhanh: các thay đổi ở đây không được áp dụng đến bản gốc.
+	Floating navigation bar	Thanh điều hướng nổi
+	Show floating bar	Hiện thanh nổi
+	Hide floating bar	Ẩn thanh nổi
+	Drag to move. Double-click to put it back.	Kéo để di chuyển. Nhấp đúp để đưa về chỗ cũ.
+	Smaller floating bar	Thu nhỏ thanh nổi
+	Larger floating bar	Phóng to thanh nổi
+	Switch between horizontal and vertical	Chuyển giữa ngang và dọc

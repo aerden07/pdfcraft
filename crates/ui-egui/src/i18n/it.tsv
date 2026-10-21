@@ -2646,3 +2646,10 @@ certificate	Key usage	Utilizzo chiave
 certificate	Self-signed	Autofirmato
 certificate	SHA-1 digest	Impronta SHA-1
 certificate	SHA-256 digest	Impronta SHA-256
+	Floating navigation bar	Barra di navigazione mobile
+	Show floating bar	Mostra barra mobile
+	Hide floating bar	Nascondi barra mobile
+	Drag to move. Double-click to put it back.	Trascina per spostare. Fai doppio clic per riportarla al suo posto.
+	Smaller floating bar	Rimpicciolisci barra mobile
+	Larger floating bar	Ingrandisci barra mobile
+	Switch between horizontal and vertical	Passa da orizzontale a verticale

@@ -1,0 +1,66 @@
+name: Windows build (floating navigation bar)
+
+# Builds the Windows x64 MSI and portable zip for this fork's floating-navigation-bar branch with
+# the same steps as the upstream release (craft-common-actions release.yml), unsigned, and
+# publishes them as a pre-release on this fork so they can be downloaded and installed.
+
+on:
+  push:
+    branches: [feat/floating-nav-bar]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: floating-nav-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows-x64:
+    name: Windows x64
+    runs-on: windows-latest
+    timeout-minutes: 120
+    env:
+      CARGO_TERM_COLOR: always
+      CARGO_INCREMENTAL: 0
+      RUST_BACKTRACE: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out craft-fonts
+        uses: storytold/craft-common-actions/actions/checkout-craft-fonts@main
+        with:
+          # The ref upstream's release.yml embeds.
+          ref: 3d9ab3a132ed0eff457e424226a435a901da30d3
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+          targets: x86_64-pc-windows-msvc
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: floating-nav-windows-x64
+      - name: Install WiX
+        uses: storytold/craft-common-actions/actions/install-wix@main
+        with:
+          wix-version: "5.0.2"
+      - name: Build and package
+        shell: pwsh
+        env:
+          CRAFT_FONTS_DIR: ${{ github.workspace }}/craft-fonts
+          CRAFT_FONTS_REQUIRED: "1"
+        run: ./packaging/windows/package.ps1 -Arch x64
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: windows-x64
+          path: dist/release/*
+          if-no-files-found: error
+      - name: Publish pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="floating-nav-${GITHUB_RUN_NUMBER}"
+          gh release create "$tag" dist/release/*.msi dist/release/*.zip \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease \
+            --title "Floating navigation bar (build ${GITHUB_RUN_NUMBER})" \
+            --notes "Unsigned Windows x64 build of ${GITHUB_SHA} with the floating navigation bar."
